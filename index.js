@@ -44,7 +44,7 @@ async function run() {
     // ====================
     // === coffees api ====
     // ====================
-    
+
     // read operation for all coffees
     app.get("/coffees", async (req, res) => {
       const cursor = coffeesCollection.find();
@@ -65,6 +65,32 @@ async function run() {
       const doc = req.body;
       // console.log(doc);
       const result = await coffeesCollection.insertOne(doc);
+      res.send(result);
+    });
+
+    // update opertaion
+    app.put("/coffees/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updatedCoffee = req.body;
+      const updateDoc = {
+        $set: {
+          name: updatedCoffee.name,
+          quantity: updatedCoffee.quantity,
+          supplier: updatedCoffee.supplier,
+          taste: updatedCoffee.taste,
+          category: updatedCoffee.category,
+          details: updatedCoffee.details,
+          photo: updatedCoffee.photo,
+        },
+      };
+      const options = { upsert: true };
+
+      const result = await coffeesCollection.updateOne(
+        filter,
+        updateDoc,
+        options,
+      );
       res.send(result);
     });
 
