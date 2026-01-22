@@ -40,9 +40,10 @@ async function run() {
 
     const myDatabase = client.db("coffeeStoreDB");
     const coffeesCollection = myDatabase.collection("coffees");
+    const usersCollection = myDatabase.collection("users");
 
     // ====================
-    // === coffees api ====
+    // === coffees related api ====
     // ====================
 
     // read operation for all coffees
@@ -99,6 +100,40 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await coffeesCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // ====================
+    // === users related api ======
+    // ====================
+
+    // read operation for all users
+    app.get("/users", async (req, res) => {
+      const cursor = usersCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // read operation for one users
+    app.get("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await usersCollection.findOne(query);
+      res.send(result);
+    });
+
+    // create operation
+    app.post("/users", async (req, res) => {
+      const doc = req.body;
+      const result = await usersCollection.insertOne(doc);
+      res.send(result);
+    });
+
+    // delete operation
+    app.delete("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await usersCollection.deleteOne(query);
       res.send(result);
     });
 
