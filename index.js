@@ -44,10 +44,19 @@ async function run() {
     // ====================
     // === coffees api ====
     // ====================
-    // read operation
+    
+    // read operation for all coffees
     app.get("/coffees", async (req, res) => {
       const cursor = coffeesCollection.find();
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // read operation for one coffee
+    app.get("/coffees/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await coffeesCollection.findOne(query);
       res.send(result);
     });
 
