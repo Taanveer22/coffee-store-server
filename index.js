@@ -10,7 +10,7 @@
 // 01
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config(); // Add this line must
 
 // 02
@@ -44,10 +44,26 @@ async function run() {
     // ====================
     // === coffees api ====
     // ====================
+    // read operation
+    app.get("/coffees", async (req, res) => {
+      const cursor = coffeesCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // create operation
     app.post("/coffees", async (req, res) => {
       const doc = req.body;
       // console.log(doc);
       const result = await coffeesCollection.insertOne(doc);
+      res.send(result);
+    });
+
+    // delete operation
+    app.delete("/coffees/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await coffeesCollection.deleteOne(query);
       res.send(result);
     });
 
