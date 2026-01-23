@@ -18,8 +18,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // 03
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 // 04
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.89rnkti.mongodb.net/?appName=Cluster0`;
@@ -73,16 +73,15 @@ async function run() {
     app.put("/coffees/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
-      const updatedCoffee = req.body;
       const updateDoc = {
         $set: {
-          name: updatedCoffee.name,
-          quantity: updatedCoffee.quantity,
-          supplier: updatedCoffee.supplier,
-          taste: updatedCoffee.taste,
-          category: updatedCoffee.category,
-          details: updatedCoffee.details,
-          photo: updatedCoffee.photo,
+          name: req.body.name,
+          quantity: req.body.quantity,
+          supplier: req.body.supplier,
+          taste: req.body.taste,
+          category: req.body.category,
+          details: req.body.details,
+          photo: req.body.photo,
         },
       };
       const options = { upsert: true };
@@ -126,6 +125,19 @@ async function run() {
     app.post("/users", async (req, res) => {
       const doc = req.body;
       const result = await usersCollection.insertOne(doc);
+      res.send(result);
+    });
+
+    // update operation
+    app.patch("/users", async (req, res) => {
+      const email = req.body.email;
+      const query = { email };
+      const updateDoc = {
+        $set: {
+          lastSignInTime: req.body?.lastSignInTime,
+        },
+      };
+      const result = await usersCollection.updateOne(query, updateDoc);
       res.send(result);
     });
 
