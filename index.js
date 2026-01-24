@@ -18,7 +18,16 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // 03
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://coffee-store-crud-85303.web.app",
+      "https://coffee-store-crud-85303.firebaseapp.com",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  }),
+);
 app.use(express.json());
 
 // 04
